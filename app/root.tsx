@@ -1,3 +1,4 @@
+import { ChakraProvider, Box, Heading } from "@chakra-ui/react";
 import {
   Links,
   Meta,
@@ -25,5 +26,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  return <Outlet />;
+  return (
+    <ChakraProvider>
+      <Outlet />
+    </ChakraProvider>
+  );
 }
