@@ -39,6 +39,7 @@ function Workout({ totalSets, workoutComplete }: WorkoutProps) {
   }, []);
 
   function handleStartTimer() {
+    playSound();
     workoutComplete(false);
     if (workoutStarted) {
       startTimer();
