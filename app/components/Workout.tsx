@@ -4,6 +4,7 @@ import {
   Dispatch,
   SetStateAction,
   useCallback,
+  useRef,
 } from "react";
 import { Button, ButtonGroup, Center, Box, Text } from "@chakra-ui/react";
 import Sound from "../assets/sound.wav";
@@ -32,13 +33,20 @@ function Workout({ totalSets, workoutComplete }: WorkoutProps) {
     stop: stopTimer,
     reset: resetTimer,
   } = useTimer(secondsPerSet);
+  const soundRef = useRef<HTMLAudioElement>();
 
-  const playSound = useCallback(() => {
-    const audio = new Audio(Sound);
-    audio.play();
+  useEffect(() => {
+    soundRef.current = new Audio(Sound);
   }, []);
 
+  const playSound = useCallback(() => {
+    if (soundRef.current) {
+      soundRef.current.play();
+    }
+  }, [soundRef.current]);
+
   function handleStartTimer() {
+    playSound();
     workoutComplete(false);
     if (workoutStarted) {
       startTimer();
