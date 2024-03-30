@@ -1,4 +1,4 @@
-import { ChakraProvider, Box, Heading } from "@chakra-ui/react";
+import { ChakraProvider } from "@chakra-ui/react";
 import {
   Links,
   Meta,

@@ -1,42 +1,55 @@
-import { Heading } from "@chakra-ui/react";
-import type { MetaFunction } from "@remix-run/node";
+import { useState } from "react";
+import { Center, Box, Flex, Select, Button } from "@chakra-ui/react";
 
-export const meta: MetaFunction = () => {
-  return [
-    { title: "New Remix App" },
-    { name: "description", content: "Welcome to Remix!" },
-  ];
-};
+import { isValidLevel, isValidMovement, levelsMapping } from "../levels";
+import Workout from "../components/Workout";
 
 export default function Index() {
+  const [totalSets, setTotalSets] = useState<number | null>(null);
+  const [workoutComplete, setWorkoutComplete] = useState(false);
+
+  function handleSubmit(event: React.FormEvent) {
+    event.preventDefault();
+    const formData = new FormData(event.target as HTMLFormElement);
+    const level = formData.get("level") as string;
+    const movement = formData.get("movement") as string;
+
+    if (isValidLevel(level) && isValidMovement(movement)) {
+      setWorkoutComplete(false);
+      setTotalSets(levelsMapping[level][movement]);
+    }
+  }
+
   return (
-    <div style={{ fontFamily: "system-ui, sans-serif", lineHeight: "1.8" }}>
-      <Heading>Welcome to Remix</Heading>
-      <ul>
-        <li>
-          <a
-            target="_blank"
-            href="https://remix.run/tutorials/blog"
-            rel="noreferrer"
-          >
-            15m Quickstart Blog Tutorial
-          </a>
-        </li>
-        <li>
-          <a
-            target="_blank"
-            href="https://remix.run/tutorials/jokes"
-            rel="noreferrer"
-          >
-            Deep Dive Jokes App Tutorial
-          </a>
-        </li>
-        <li>
-          <a target="_blank" href="https://remix.run/docs" rel="noreferrer">
-            Remix Docs
-          </a>
-        </li>
-      </ul>
-    </div>
+    <Center flexDirection={"column"} gap={6}>
+      <Box>
+        <form onSubmit={handleSubmit}>
+          <Flex flexDirection={"column"} gap={4}>
+            <Select name="level" id="level">
+              <option value="1a">Level 1A</option>
+              <option value="1b">Level 1B</option>
+              <option value="1c">Level 1C</option>
+              <option value="1d">Level 1D</option>
+              <option value="2">Level 2</option>
+              <option value="3">Level 3</option>
+              <option value="4">Level 4</option>
+            </Select>
+            <Select name="movement" id="movement">
+              <option value="6-count">6-count</option>
+              <option value="10-count">10-count/navy seal</option>
+            </Select>
+            <Button colorScheme="teal" type="submit">
+              Submit
+            </Button>
+          </Flex>
+        </form>
+      </Box>
+
+      {totalSets && (
+        <Workout totalSets={totalSets} workoutComplete={setWorkoutComplete} />
+      )}
+
+      {workoutComplete && <div>Workout completed!</div>}
+    </Center>
   );
 }
