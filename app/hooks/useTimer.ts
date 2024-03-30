@@ -43,6 +43,7 @@ export function useTimer(countdownSeconds: number) {
   function reset() {
     stop();
     setRemainingSeconds(countdownSeconds);
+    previousTimeRef.current = undefined;
   }
 
   useEffect(() => {

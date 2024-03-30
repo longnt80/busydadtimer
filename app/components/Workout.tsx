@@ -9,7 +9,6 @@ import { Button, ButtonGroup, Center, Box, Text } from "@chakra-ui/react";
 import Sound from "../assets/sound.wav";
 
 import { useTimer } from "../hooks/useTimer";
-import { sleep } from "../utils";
 
 const TOTAL_DURATION_IN_SECONDS = 20 * 60;
 interface WorkoutProps {
@@ -77,9 +76,9 @@ function Workout({ totalSets, workoutComplete }: WorkoutProps) {
   useEffect(() => {
     if (remainingReadySeconds <= 0) {
       setWorkoutStarted(true);
-      playSound();
       setSets(1);
-      sleep(1000).then(() => startTimer());
+      playSound();
+      startTimer();
     }
   }, [remainingReadySeconds]);
 
