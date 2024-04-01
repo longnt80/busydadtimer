@@ -1,11 +1,7 @@
-export type Levels = "1a" | "1b" | "1c" | "1d" | "2" | "3" | "4";
+export type Levels = "1b" | "1c" | "1d" | "2" | "3" | "4";
 export type Movements = "6-count" | "10-count";
 
 export const levelsMapping = {
-  "1a": {
-    "6-count": 1,
-    "10-count": 1,
-  },
   "1b": {
     "6-count": 50,
     "10-count": 20,

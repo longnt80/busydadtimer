@@ -33,6 +33,7 @@ export default function Workout() {
   const secondsPerSet = Math.round(TOTAL_DURATION_IN_SECONDS / totalSets);
   const [sets, setSets] = useState(0);
   const [workoutStarted, setWorkoutStarted] = useState(false);
+  const [workoutInit, setWorkoutInit] = useState(false);
   const {
     remainingSeconds: remainingReadySeconds,
     start: startReadyTimer,
@@ -58,6 +59,10 @@ export default function Workout() {
   }, [soundRef.current]);
 
   function handleStartTimer() {
+    if (!workoutInit) {
+      setWorkoutInit(true);
+    }
+
     if (workoutStarted) {
       startTimer();
     } else {
@@ -77,6 +82,7 @@ export default function Workout() {
     resetReadyTimer();
     resetTimer();
     setWorkoutStarted(false);
+    setWorkoutInit(false);
     setSets(0);
   }
 
@@ -114,26 +120,37 @@ export default function Workout() {
           {sets}/{totalSets} reps
         </Text>
       </Box>
-      <Box>
-        {workoutStarted ? (
-          <Text fontSize={"10rem"}>{remainingSecondsInSet}</Text>
-        ) : (
-          <Text fontSize={"10rem"} color="green">
-            {remainingReadySeconds}
-          </Text>
-        )}
-      </Box>
+      {workoutInit &&
+        <Box>
+          {workoutStarted ? (
+            <Text fontSize={"10rem"}>{remainingSecondsInSet}</Text>
+          ) : (
+            <Text fontSize={"10rem"} color="green">
+              {remainingReadySeconds}
+            </Text>
+          )}
+        </Box>
+      }
       <ButtonGroup>
         <Button colorScheme="green" onClick={handleStartTimer}>
           Start
         </Button>
-        <Button variant="outline" onClick={pauseWorkout}>
-          Stop
-        </Button>
-        <Button colorScheme="orange" onClick={resetWorkout}>
-          Reset
-        </Button>
+        {workoutInit &&
+          <>
+            <Button variant="outline" onClick={pauseWorkout}>
+              Pause
+            </Button>
+            <Button colorScheme="orange" onClick={resetWorkout}>
+              Reset
+            </Button>
+          </>
+        }
       </ButtonGroup>
+      {workoutInit && 
+        <ButtonGroup>
+          <Button colorScheme="red">Abort</Button>
+        </ButtonGroup>
+      }
     </Center>
   );
 }

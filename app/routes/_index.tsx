@@ -26,7 +26,6 @@ export default function Index() {
         <Form method="post">
           <Flex flexDirection={"column"} gap={4}>
             <Select name="level" id="level">
-              <option value="1a">Level 1A</option>
               <option value="1b">Level 1B</option>
               <option value="1c">Level 1C</option>
               <option value="1d">Level 1D</option>
