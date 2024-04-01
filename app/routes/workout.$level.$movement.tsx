@@ -1,15 +1,19 @@
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { useLoaderData, useNavigate } from "@remix-run/react";
 import {
   useEffect,
   useState,
-  Dispatch,
-  SetStateAction,
   useCallback,
   useRef,
 } from "react";
-import { Button, ButtonGroup, Center, Box, Text } from "@chakra-ui/react";
+import { Button, ButtonGroup, Center, Box, Text,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalCloseButton, useDisclosure } from "@chakra-ui/react";
 
 import { useTimer } from "../hooks/useTimer";
 import { isValidLevel, isValidMovement, levelsMapping } from "../levels";
@@ -29,6 +33,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 
 export default function Workout() {
   const totalSets = useLoaderData<typeof loader>();
+  const navigate = useNavigate();
   
   const secondsPerSet = Math.round(TOTAL_DURATION_IN_SECONDS / totalSets);
   const [sets, setSets] = useState(0);
@@ -47,6 +52,7 @@ export default function Workout() {
     reset: resetTimer,
   } = useTimer(secondsPerSet);
   const soundRef = useRef<HTMLAudioElement>();
+  const { isOpen, onOpen, onClose } = useDisclosure()
 
   useEffect(() => {
     soundRef.current = new Audio(Sound);
@@ -86,6 +92,11 @@ export default function Workout() {
     setSets(0);
   }
 
+  function abort() {
+    resetWorkout();
+    navigate("/");
+  }
+
   useEffect(() => {
     resetWorkout();
   }, [totalSets]);
@@ -114,43 +125,61 @@ export default function Workout() {
   }, [remainingSecondsInSet]);
 
   return (
-    <Center flexDirection={"column"} gap={4}>
-      <Box>
-        <Text fontSize={"5xl"}>
-          {sets}/{totalSets} reps
-        </Text>
-      </Box>
-      {workoutInit &&
+    <>
+      <Center flexDirection={"column"} gap={4}>
         <Box>
-          {workoutStarted ? (
-            <Text fontSize={"10rem"}>{remainingSecondsInSet}</Text>
-          ) : (
-            <Text fontSize={"10rem"} color="green">
-              {remainingReadySeconds}
-            </Text>
-          )}
+          <Text fontSize={"5xl"}>
+            {sets}/{totalSets} reps
+          </Text>
         </Box>
-      }
-      <ButtonGroup>
-        <Button colorScheme="green" onClick={handleStartTimer}>
-          Start
-        </Button>
         {workoutInit &&
-          <>
-            <Button variant="outline" onClick={pauseWorkout}>
-              Pause
-            </Button>
-            <Button colorScheme="orange" onClick={resetWorkout}>
-              Reset
-            </Button>
-          </>
+          <Box>
+            {workoutStarted ? (
+              <Text fontSize={"10rem"}>{remainingSecondsInSet}</Text>
+            ) : (
+              <Text fontSize={"10rem"} color="green">
+                {remainingReadySeconds}
+              </Text>
+            )}
+          </Box>
         }
-      </ButtonGroup>
-      {workoutInit && 
         <ButtonGroup>
-          <Button colorScheme="red">Abort</Button>
+          <Button colorScheme="green" onClick={handleStartTimer}>
+            Start
+          </Button>
+          {workoutInit &&
+            <>
+              <Button variant="outline" onClick={pauseWorkout}>
+                Pause
+              </Button>
+              <Button colorScheme="orange" onClick={resetWorkout}>
+                Reset
+              </Button>
+            </>
+          }
         </ButtonGroup>
-      }
-    </Center>
+        {workoutInit && 
+          <ButtonGroup>
+            <Button colorScheme="red" onClick={() => {
+              console.log('foo bar');
+              onOpen();
+            }}>Abort</Button>
+          </ButtonGroup>
+        }
+      </Center>
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Do you want to abort this workout?</ModalHeader>
+          <ModalCloseButton />
+          <ModalFooter>
+            <Button colorScheme='blue' mr={3} onClick={abort}>
+              Abort
+            </Button>
+            <Button variant='ghost' onClick={onClose}>No</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+    </>
   );
 }
