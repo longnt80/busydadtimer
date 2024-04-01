@@ -1,29 +1,29 @@
-import { useState } from "react";
+import type { ActionFunctionArgs } from "@remix-run/node";
+import { json, redirect } from "@remix-run/node";
+import { Form } from "@remix-run/react";
 import { Center, Box, Flex, Select, Button } from "@chakra-ui/react";
 
 import { isValidLevel, isValidMovement, levelsMapping } from "../levels";
-import Workout from "../components/Workout";
 
-export default function Index() {
-  const [totalSets, setTotalSets] = useState<number | null>(null);
-  const [workoutComplete, setWorkoutComplete] = useState(false);
 
-  function handleSubmit(event: React.FormEvent) {
-    event.preventDefault();
-    const formData = new FormData(event.target as HTMLFormElement);
-    const level = formData.get("level") as string;
-    const movement = formData.get("movement") as string;
+export const action = async ({request}: ActionFunctionArgs) => {
+  const formData = await request.formData();
+  const level = formData.get("level");
+  const movement = formData.get("movement");
 
-    if (isValidLevel(level) && isValidMovement(movement)) {
-      setWorkoutComplete(false);
-      setTotalSets(levelsMapping[level][movement]);
-    }
+  const isValid = level && movement && isValidLevel(level) && isValidMovement(movement);
+  if (isValid) {
+    throw redirect(`/workout/${level}/${movement}`);
   }
 
+  return json({ formError: "Invalid level or movement" });
+}
+
+export default function Index() {
   return (
     <Center flexDirection={"column"} gap={6}>
       <Box>
-        <form onSubmit={handleSubmit}>
+        <Form method="post">
           <Flex flexDirection={"column"} gap={4}>
             <Select name="level" id="level">
               <option value="1a">Level 1A</option>
@@ -42,14 +42,8 @@ export default function Index() {
               Submit
             </Button>
           </Flex>
-        </form>
+        </Form>
       </Box>
-
-      {totalSets && (
-        <Workout totalSets={totalSets} workoutComplete={setWorkoutComplete} />
-      )}
-
-      {workoutComplete && <div>Workout completed!</div>}
     </Center>
   );
 }

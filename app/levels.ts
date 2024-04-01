@@ -32,10 +32,10 @@ export const levelsMapping = {
   },
 };
 
-export function isValidLevel(level: string): level is Levels {
-  return Object.keys(levelsMapping).includes(level);
+export function isValidLevel(level: FormDataEntryValue): level is Levels {
+  return Object.keys(levelsMapping).includes(level as string);
 }
 
-export function isValidMovement(movement: string): movement is Movements {
-  return ["6-count", "10-count"].includes(movement);
+export function isValidMovement(movement: FormDataEntryValue): movement is Movements {
+  return ["6-count", "10-count"].includes(movement as string);
 }
