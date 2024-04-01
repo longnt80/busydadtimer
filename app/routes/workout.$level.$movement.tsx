@@ -39,7 +39,7 @@ export default function Workout() {
     start: startReadyTimer,
     stop: stopReadyTimer,
     reset: resetReadyTimer,
-  } = useTimer(3);
+  } = useTimer(5);
   const {
     remainingSeconds: remainingSecondsInSet,
     start: startTimer,
