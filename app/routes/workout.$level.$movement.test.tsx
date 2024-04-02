@@ -4,6 +4,9 @@ import { describe, it, expect, test, vi, afterEach, beforeEach } from "vitest";
 import userEvent from "@testing-library/user-event";
 import Workout from "./workout.$level.$movement";
 
+window.HTMLMediaElement.prototype.play = () =>
+  new Promise((res) => "sound played");
+
 beforeEach(() => {
   vi.useFakeTimers({ shouldAdvanceTime: true });
 });
