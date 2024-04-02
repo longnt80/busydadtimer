@@ -1,12 +1,15 @@
 import { createRemixStub } from "@remix-run/testing";
-import { render, screen, waitFor } from "@testing-library/react";
-import { describe, it, expect, test, vi, afterEach } from "vitest";
+import { render, screen, act } from "@testing-library/react";
+import { describe, it, expect, test, vi, afterEach, beforeEach } from "vitest";
 import userEvent from "@testing-library/user-event";
 import Workout from "./workout.$level.$movement";
-import { sleep } from "../utils";
+
+beforeEach(() => {
+  vi.useFakeTimers({ shouldAdvanceTime: true });
+});
 
 afterEach(async () => {
-  vi.clearAllTimers();
+  vi.useRealTimers();
 });
 
 describe("Workout", async () => {
@@ -17,16 +20,30 @@ describe("Workout", async () => {
         path: "/",
         Component: Workout,
         loader() {
-          return 1;
+          return 275;
         },
       },
     ]);
     render(<RemixStub />);
     await screen.findByText("Start");
-    expect(screen.getByTestId("reps-completed")).toHaveTextContent("0/1 reps");
+    expect(screen.getByTestId("reps-completed")).toHaveTextContent(
+      "0/275 reps"
+    );
     await user.click(screen.getByRole("button", { name: /Start/i }));
-    await sleep(6000);
-    expect(screen.getByTestId("reps-completed")).toHaveTextContent("1/1 reps");
-    // screen.debug();
-  }, 10000);
+
+    act(() => vi.advanceTimersByTime(4900));
+    expect(screen.getByTestId("reps-completed")).toHaveTextContent(
+      "0/275 reps"
+    );
+    act(() => vi.advanceTimersByTime(100));
+    expect(screen.getByTestId("reps-completed")).toHaveTextContent(
+      "1/275 reps"
+    );
+    act(() => vi.advanceTimersByTime(4000));
+    act(() => vi.advanceTimersByTime(4000));
+    expect(screen.getByTestId("reps-completed")).toHaveTextContent(
+      "3/275 reps"
+    );
+    screen.debug();
+  });
 });
