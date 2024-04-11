@@ -55,6 +55,7 @@ export default function Workout() {
     reset: resetTimer,
   } = useTimer(secondsPerSet);
   const soundRef = useRef<HTMLAudioElement>();
+  const wakelock = useRef<WakeLockSentinel | null>();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
@@ -67,7 +68,19 @@ export default function Workout() {
     }
   }, [soundRef.current]);
 
+  const requestWakeLock = async () => {
+    try {
+      wakelock.current = await navigator.wakeLock.request("screen");
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   function handleStartTimer() {
+    if (!wakelock.current) {
+      requestWakeLock();
+    }
+
     if (!workoutInit) {
       setWorkoutInit(true);
     }
@@ -93,6 +106,8 @@ export default function Workout() {
     setWorkoutStarted(false);
     setWorkoutInit(false);
     setSets(0);
+    wakelock.current?.release();
+    wakelock.current = null;
   }
 
   function abort() {
@@ -126,6 +141,13 @@ export default function Workout() {
       startTimer();
     }
   }, [remainingSecondsInSet]);
+
+  useEffect(() => {
+    return () => {
+      wakelock.current?.release();
+      wakelock.current = null;
+    };
+  }, []);
 
   return (
     <>
