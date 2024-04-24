@@ -1,11 +1,11 @@
 import { createRemixStub } from "@remix-run/testing";
 import { render, screen, act } from "@testing-library/react";
-import { describe, it, expect, test, vi, afterEach, beforeEach } from "vitest";
-import userEvent from "@testing-library/user-event";
+import { describe, it, expect, vi, afterEach, beforeEach } from "vitest";
+import { userEvent } from "@testing-library/user-event";
 import Workout from "./workout.$level.$movement";
 
 window.HTMLMediaElement.prototype.play = () =>
-  new Promise((res) => "sound played");
+  new Promise(() => "sound played");
 
 beforeEach(() => {
   vi.useFakeTimers({ shouldAdvanceTime: true });

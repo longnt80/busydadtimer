@@ -3,21 +3,21 @@ import { json, redirect } from "@remix-run/node";
 import { Form } from "@remix-run/react";
 import { Center, Box, Flex, Select, Button } from "@chakra-ui/react";
 
-import { isValidLevel, isValidMovement, levelsMapping } from "../levels";
+import { isValidLevel, isValidMovement } from "../levels";
 
-
-export const action = async ({request}: ActionFunctionArgs) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
   const level = formData.get("level");
   const movement = formData.get("movement");
 
-  const isValid = level && movement && isValidLevel(level) && isValidMovement(movement);
+  const isValid =
+    level && movement && isValidLevel(level) && isValidMovement(movement);
   if (isValid) {
     throw redirect(`/workout/${level}/${movement}`);
   }
 
   return json({ formError: "Invalid level or movement" });
-}
+};
 
 export default function Index() {
   return (
