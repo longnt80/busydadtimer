@@ -73,6 +73,18 @@ module.exports = {
       ],
     },
 
+    // Test files
+    {
+      // Enable eslint-plugin-testing-library rules or preset only for matching testing files!
+      files: [
+        "**/__tests__/**/*.[jt]s?(x)",
+        "**/?(*.)+(spec|test).[jt]s?(x)",
+        "**/*.{jsx,tsx}",
+        "./app/**/*.test.{jsx, js, ts,tsx}",
+      ],
+      extends: ["plugin:testing-library/react"],
+    },
+
     // Node
     {
       files: [".eslintrc.cjs"],
