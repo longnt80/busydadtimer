@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, afterEach, beforeEach } from "vitest";
-import { render, fireEvent, act } from "@testing-library/react";
+import { render, fireEvent, screen } from "@testing-library/react";
 
 import { useTimer } from "./useTimer";
 
@@ -30,30 +30,28 @@ describe("useTimer", () => {
     vi.resetAllMocks();
   });
 
-  it("shows the initial total count down seconds", () => {
-    const { getByTestId } = render(<TimerComponent initialSeconds={10} />);
-    expect(getByTestId("remaining-seconds").textContent).toEqual("10");
+  it("shows the countdown correctly with user's interactions", async () => {
+    await render(<TimerComponent initialSeconds={10} />);
+    // Initial render
+    expect(screen.getByTestId("remaining-seconds").textContent).toEqual("10");
 
     // Start the timer
-    fireEvent.click(getByTestId("start-btn"));
-    act(() => {
-      vi.advanceTimersByTime(2000);
-    });
-    expect(getByTestId("remaining-seconds").textContent).toBe("8");
+    fireEvent.click(screen.getByTestId("start-btn"));
+    // Fast-forward time by another 2 second
+    await vi.advanceTimersByTime(2000);
+    expect(screen.getByTestId("remaining-seconds").textContent).toBe("8");
 
     // Stop the timer
-    fireEvent.click(getByTestId("stop-btn"));
+    fireEvent.click(screen.getByTestId("stop-btn"));
     // Fast-forward time by another 1 second
-    act(() => {
-      vi.advanceTimersByTime(1000);
-    });
+    await vi.advanceTimersByTime(1000);
     // Check remaining seconds after stopping
-    expect(getByTestId("remaining-seconds").textContent).toBe("8");
+    expect(screen.getByTestId("remaining-seconds").textContent).toBe("8");
 
     // Reset the timer
-    fireEvent.click(getByTestId("reset-btn"));
+    fireEvent.click(screen.getByTestId("reset-btn"));
 
     // Check remaining seconds after reset
-    expect(getByTestId("remaining-seconds").textContent).toBe("10");
+    expect(screen.getByTestId("remaining-seconds").textContent).toBe("10");
   });
 });
