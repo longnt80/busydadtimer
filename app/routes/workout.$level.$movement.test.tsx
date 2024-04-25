@@ -47,6 +47,5 @@ describe("Workout", async () => {
     expect(screen.getByTestId("reps-completed")).toHaveTextContent(
       "3/275 reps"
     );
-    screen.debug();
   });
 });
