@@ -35,25 +35,25 @@ describe("useTimer", () => {
     render(<TimerComponent initialSeconds={10} />);
     const user = userEvent.setup();
     // Initial render
-    expect(screen.getByTestId("remaining-seconds").textContent).toEqual("10");
+    expect(screen.getByTestId("remaining-seconds")).toHaveTextContent("10");
 
     // Start the timer
     await user.click(screen.getByTestId("start-btn"));
     // Fast-forward time by another 2 second
     await vi.advanceTimersByTime(2000);
-    expect(screen.getByTestId("remaining-seconds").textContent).toBe("8");
+    expect(screen.getByTestId("remaining-seconds")).toHaveTextContent("8");
 
     // Stop the timer
     await user.click(screen.getByTestId("stop-btn"));
     // Fast-forward time by another 1 second
     await vi.advanceTimersByTime(1000);
     // Check remaining seconds after stopping
-    expect(screen.getByTestId("remaining-seconds").textContent).toBe("8");
+    expect(screen.getByTestId("remaining-seconds")).toHaveTextContent("8");
 
     // Reset the timer
     await user.click(screen.getByTestId("reset-btn"));
 
     // Check remaining seconds after reset
-    expect(screen.getByTestId("remaining-seconds").textContent).toBe("10");
+    expect(screen.getByTestId("remaining-seconds")).toHaveTextContent("10");
   });
 });
