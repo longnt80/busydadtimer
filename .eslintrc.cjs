@@ -82,7 +82,7 @@ module.exports = {
         "**/*.{jsx,tsx}",
         "./app/**/*.test.{jsx, js, ts,tsx}",
       ],
-      extends: ["plugin:testing-library/react"],
+      extends: ["plugin:testing-library/react", "plugin:jest-dom/recommended"],
     },
 
     // Node
