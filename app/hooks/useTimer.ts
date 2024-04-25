@@ -1,11 +1,11 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 
 export function useTimer(countdownSeconds: number) {
   const [remainingSeconds, setRemainingSeconds] = useState(countdownSeconds);
   const timerIDRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const previousTimeRef = useRef<number | undefined>(undefined);
 
-  function timer() {
+  const timer = useCallback(() => {
     const now = Date.now();
     let elapsedTime;
 
@@ -25,13 +25,13 @@ export function useTimer(countdownSeconds: number) {
     }
 
     timerIDRef.current = setTimeout(() => timer(), 100);
-  }
+  }, []);
 
-  function start() {
+  const start = useCallback(() => {
     if (timerIDRef.current) return;
 
     timer();
-  }
+  }, [timer]);
 
   function stop() {
     if (timerIDRef.current) {
@@ -40,17 +40,17 @@ export function useTimer(countdownSeconds: number) {
     }
   }
 
-  function reset() {
+  const reset = useCallback(() => {
     stop();
     setRemainingSeconds(countdownSeconds);
     previousTimeRef.current = undefined;
-  }
+  }, [countdownSeconds]);
 
   useEffect(() => {
     if (remainingSeconds <= 0) {
       reset();
     }
-  }, [remainingSeconds]);
+  }, [remainingSeconds, reset]);
 
   return {
     remainingSeconds,

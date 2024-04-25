@@ -66,7 +66,7 @@ export default function Workout() {
     if (soundRef.current) {
       soundRef.current.play();
     }
-  }, [soundRef.current]);
+  }, []);
 
   const requestWakeLock = async () => {
     try {
@@ -100,7 +100,7 @@ export default function Workout() {
     }
   }
 
-  function resetWorkout() {
+  const resetWorkout = useCallback(() => {
     resetReadyTimer();
     resetTimer();
     setWorkoutStarted(false);
@@ -108,7 +108,7 @@ export default function Workout() {
     setSets(0);
     wakelock.current?.release();
     wakelock.current = null;
-  }
+  }, [resetReadyTimer, resetTimer]);
 
   function abort() {
     resetWorkout();
@@ -117,13 +117,13 @@ export default function Workout() {
 
   useEffect(() => {
     resetWorkout();
-  }, [totalSets]);
+  }, [totalSets, resetWorkout]);
 
   useEffect(() => {
     if (sets >= totalSets) {
       stopTimer();
     }
-  }, [sets]);
+  }, [sets, totalSets, stopTimer]);
 
   useEffect(() => {
     if (remainingReadySeconds <= 0) {
@@ -132,7 +132,7 @@ export default function Workout() {
       playSound();
       startTimer();
     }
-  }, [remainingReadySeconds]);
+  }, [remainingReadySeconds, playSound, startTimer]);
 
   useEffect(() => {
     if (remainingSecondsInSet !== null && remainingSecondsInSet <= 0) {
@@ -140,7 +140,7 @@ export default function Workout() {
       playSound();
       startTimer();
     }
-  }, [remainingSecondsInSet]);
+  }, [remainingSecondsInSet, playSound, startTimer]);
 
   useEffect(() => {
     return () => {
