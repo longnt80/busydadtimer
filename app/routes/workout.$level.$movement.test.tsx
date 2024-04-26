@@ -88,6 +88,7 @@ describe("Workout level 60 navy seal", async () => {
       )
     );
     await user.click(screen.getByRole("button", { name: /Start/i }));
+
     // Advance by 20 minutes
     await act(() => vi.advanceTimersByTime(5000));
     await waitFor(() =>
@@ -99,7 +100,6 @@ describe("Workout level 60 navy seal", async () => {
     const totalStateUpdatesEvery500Miliseconds = minutesInMiliseconds / 500;
 
     for (let i = totalStateUpdatesEvery500Miliseconds; i >= 0; i--) {
-      // Your code here
       await act(() => vi.advanceTimersByTime(500));
     }
     await waitFor(() =>

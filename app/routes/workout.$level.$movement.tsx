@@ -19,7 +19,7 @@ import {
 
 import { useTimer } from "../hooks/useTimer";
 import { isValidLevel, isValidMovement, levelsMapping } from "../levels";
-import Sound from "../assets/sound.wav";
+import Sound from "../assets/bell.wav";
 
 const TOTAL_DURATION_IN_SECONDS = 20 * 60;
 
